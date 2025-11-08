@@ -1,3 +1,19 @@
+/**
+ * Appends a donor-patient alert to the 'Alerts' sheet.
+ */
+const appendAlertToExcel = (alert) => {
+  const wb = getWorkbook();
+  const ws = wb.Sheets['Alerts'] || xlsx.utils.json_to_sheet([]);
+  xlsx.utils.sheet_add_json(ws, [alert], {
+    header: Object.keys(alert),
+    skipHeader: !!ws['!ref'],
+    origin: -1,
+  });
+  if (!wb.Sheets['Alerts']) {
+    xlsx.utils.book_append_sheet(wb, ws, 'Alerts');
+  }
+  atomicWrite(wb);
+};
 const xlsx = require('xlsx');
 const fs = require('fs');
 const path = require('path');
@@ -144,4 +160,5 @@ module.exports = {
   appendPatientToExcel,
   exportWorkbook,
   dbPath,
+  appendAlertToExcel,
 };

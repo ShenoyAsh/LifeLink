@@ -117,9 +117,20 @@ const sendAlert = async (req, res) => {
     console.log(`BODY: URGENT: LifeLink match for patient ${patient.name} (${patient.bloodType}) near you. Check email for details.`);
     console.log(`-------------------------------`);
     
-    // --- 3. Log alert in Excel (Optional - complex operation) ---
-    // We could create a third 'Alerts' sheet and append to it.
-    // appendToAlertsSheet({ donorId, patientId, time: new Date() });
+
+    // --- 3. Log alert in Excel ---
+    const { appendAlertToExcel } = require('../utils/excelHelper');
+    appendAlertToExcel({
+      donorId,
+      donorEmail: donor.email,
+      donorName: donor.name,
+      patientId,
+      patientEmail: patient.email,
+      patientName: patient.name,
+      bloodType: patient.bloodType,
+      location: patient.location.name,
+      time: new Date().toISOString(),
+    });
 
     if (emailSent) {
       res.status(200).json({ message: 'Alert sent successfully' });
